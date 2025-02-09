@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files to ZIP Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+:root {
+  --blue: #00ccff;
+  --red: #ff0000;
+}
+
+        body { font-family: Arial, sans-serif; text-align: center; display: flex; align-items: center; margin: 0; padding: 0; justify-content: center; flex-direction: column;
+-webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; /* Add a border to the table */
+            border-spacing: 0;/* Add rounded corners */}
+        th, td { border: 1px solid #000; padding: 8px; text-align: left;}
+
+        th { background-color: #f2f2f2; }
+        textarea { width: 100%; height: 150px; margin-top: 10px; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+        input { padding: 5px; margin: 5px; }
+.page{
+width: 95%;
+display: flex; align-items: center;
+justify-content: center;
+flex-direction: column;
+}
+.logo{
+padding: 0;
+margin: 0;
+margin-top: 15px;
+line-height: 0;
+margin-bottom: 1rem;
+}
+span, button{
+background-color: #f2f2f2;
+color: #000;
+padding: 4px 16px;
+border-radius: 5px;
+border: solid 1px #000;
+transition: all 0.3s;
+}
+span:hover, button:hover{
+background-color: var(--blue);
+color: #fff;
+}
+.del:hover{
+background-color: var(--red);
+color: #fff;
+}
+    </style>
+</head>
+<body>
+<div class="page">
+        <div class="logo"><h2>OPEN CDB</h2>
+<p>Local storage</p></div>
+
+    <label for="fileInput"><span>Import</span></label>
+    <input type="file" id="fileInput" style="display: none;" multiple>
+    <h3>Folders</h3>
+    <input type="text" id="newFolderName" placeholder="Enter folder name">
+    <button onclick="createFolder()">Create Folder</button>
+
+    <h3>File List</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="fileTable"></tbody>
+    </table>
+
+    <h3>Edit File</h3>
+    <input type="text" id="fileNameInput" placeholder="(e.g., folder/text.txt)">
+    <textarea id="fileEditor" placeholder="Select a file to edit"></textarea>
+    <br>
+    <button onclick="saveFile()">Save Changes</button>
+
+    <h3>Create New File</h3>
+    <input type="text" id="newFileName" placeholder="(e.g., folder/text.txt)">
+    <textarea id="newFileContent" placeholder="Enter file content"></textarea>
+    <br>
+    <button onclick="createNewFile()">Add File</button>
+
+    <br><br>
+    <button onclick="downloadZip()">Download ZIP</button>
+    <a id="downloadLink" style="display:none"></a>
+</div>
+
+<script>
+    let fileList = {};
+
+    function loadFiles() {
+        const input = document.getElementById("fileInput");
+        if (input.files.length === 0) {
+            return;
+        }
+
+        Array.from(input.files).forEach(file => {
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                fileList[file.name] = event.target.result;
+                updateFileTable();
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    // Correct file size formatting function
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return `${bytes}B`;
+        else if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)}KB`;
+        else if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)}MB`;
+        else return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)}GB`;
+    }
+
+    function updateFileTable() {
+        let tableBody = document.getElementById("fileTable");
+        tableBody.innerHTML = "";
+       const total = 0; Object.keys(fileList).forEach(fileName => {
+let kb = formatFileSize(fileList[fileName]?.length || 0); // Get file size for each file
+total
+let id = `del${fileName}`;
+            let row = tableBody.insertRow();
+            row.insertCell(0).innerText = `${fileName} (${kb})`;
+            let actions = row.insertCell(1);
+            actions.innerHTML =
+                `<button onclick="editFile('${fileName}')">Edit</button>
+                 <button onclick="deleteFile('${fileName}', '${id}')" id="${id}" class="del">Delete</button>`;
+        });
+    }
+
+    function editFile(fileName) {
+        document.getElementById("fileEditor").value = fileList[fileName];
+        document.getElementById("fileNameInput").value = fileName;
+        document.getElementById("fileEditor").setAttribute("data-filename", fileName);
+    }
+
+    function saveFile() {
+        let fileName = document.getElementById("fileEditor").getAttribute("data-filename");
+        if (fileName && fileList[fileName] !== undefined) {
+            fileList[fileName] = document.getElementById("fileEditor").value;
+renameFile();
+            updateFileTable();
+        } else {
+            // Error handling if file doesn't exist
+        }
+
+    }
+
+    function renameFile() {
+        let oldName = document.getElementById("fileEditor").getAttribute("data-filename");
+        let newName = document.getElementById("fileNameInput").value.trim();
+
+        if (!oldName || !fileList[oldName]) {
+            return;
+        }
+
+        if (newName === "" || fileList[newName]) {
+            return;
+        }
+
+        fileList[newName] = fileList[oldName]; // Move content
+        delete fileList[oldName]; // Remove old entry
+        document.getElementById("fileEditor").setAttribute("data-filename", newName);
+        updateFileTable();
+    }
+function exampleFile(name, content){
+document.getElementById("newFileName").value = name;
+document.getElementById("newFileContent").value = content;
+createNewFile();
+}
+    function createNewFile() {
+        let fileName = document.getElementById("newFileName").value.trim();
+        let fileContent = document.getElementById("newFileContent").value;
+
+        if (fileName === "") {
+            return;
+        }
+
+        fileList[fileName] = fileContent;
+        updateFileTable();
+        document.getElementById("newFileName").value = "";
+        document.getElementById("newFileContent").value = "";
+    }
+
+    function createFolder() {
+        let folderName = document.getElementById("newFolderName").value.trim();
+        if (folderName === "") {
+            return;
+        }
+        if (!folderName.endsWith("/")) folderName += "/";
+
+        if (fileList[folderName]) {
+            return;
+        }
+
+        fileList[folderName] = null; // Empty folder placeholder
+        updateFileTable();
+        document.getElementById("newFolderName").value = "";
+    }
+
+    function deleteFile(fileName, id) {
+        document.getElementById(id).addEventListener("transitionend", () => {
+delete fileList[fileName];
+updateFileTable();
+});
+    }
+
+    function downloadZip() {
+        let zip = new JSZip();
+        Object.keys(fileList).forEach(fileName => {
+            if (fileList[fileName] !== null) {
+                zip.file(fileName, fileList[fileName]);
+            }
+        });
+
+        zip.generateAsync({ type: "blob" }).then(function(content) {
+            let link = document.getElementById("downloadLink");
+            link.href = URL.createObjectURL(content);
+            link.download = "files.zip";
+            link.style.display = "block"; // Ensure link is visible
+            link.click();
+        });
+    }
+
+    document.getElementById("fileInput").addEventListener("change", function (event) {
+        let file = event.target.files[0];
+        if (file) {
+            loadFiles();
+        }
+    });
+exampleFile("README.md", "This is an example. NIGGER.");
+</script>
+</body>
+</html>
