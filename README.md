@@ -1,2 +1,2 @@
 # Opencdb
-Open cloud database
+Open cognitive data bot
