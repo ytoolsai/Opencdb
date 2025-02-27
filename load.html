@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="icon" href="logo.png" type="image/png">
+    <title>OpenCDB</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+</style>
+    <style>
+        body { font-family: "Noto Sans", serif; text-align: center; margin: 20px; -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
+        #chatbox { width: 90%; aspect-ratio: 5/5; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 20px auto; border-radius: 8px;}
+        button, input[type="file"] { padding: 10px; margin: 10px; border-radius: 8px; border: 1px solid #ddd; display: none;}
+.btn{
+border: 1px solid #666;
+background: #ddd;
+padding: 5px; border-radius: 8px;
+margin: 5px;
+}
+input[type="text"]{
+margin-bottom: 20px;
+border: 1px solid #ddd;
+width: 90%;
+outline: none;
+padding: 10px; border-radius: 8px;
+}
+table{
+margin-top: 20px;
+border-collapse: collapse;
+width: 100%;
+}
+td, th, tr{
+border: 1px solid #ddd;
+padding: 8px;
+}
+        img { width: calc(100% - 10px); margin: 5px; border-radius: 5px; border: 1px solid #000; }
+        .msg { padding: 5px; border-radius: 8px; word-wrap: break-word; margin: 5px;}
+        .user { background: #007bff; color: white; text-align: right; float: right; width: 75%; border: 1px solid #003478;}
+        .bot { background: #ddd; text-align: left; float: left; width: 75%; border: 1px solid #666;}
+::-moz-selection { /* Code for Firefox */
+  color: #fff;
+background: #000;
+}
+a{
+color: #007bff;
+text-decoration: none;
+}
+::selection {
+  color: #fff;
+background: #000;
+}
+.logo{
+line-height: 0.75;
+}
+.title{
+color: #999;
+line-height: 0;
+margin: 10px;
+padding: 0px;
+margin-bottom: 1rem;
+}
+    </style>
+</head>
+<body>
+
+    <div class="logo"><h2>OpenCDB</h2>
+<p>Jsonbin.io 2.8/5.0MB</p></div>
+<span class="btn">Delete</span>
+<span class="btn">Share</span>
+<table>
+<tr>
+<th>CHATS (54)</th>
+<th>DATES</th>
+</tr>
+  <tr>
+    <td><a href="javascript:void(0)" onclick="openChat('500')">Simple greetings</a></td>
+<td>Fri Feb 28 2025</td>
+  </tr>
+  <tr>
+    <td><a href="javascript:void(0)" onclick="openChat('500')">4 paragraph essay</a></td>
+<td>Thu Feb 27 2025</td>
+  </tr>
+</table>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7474324524980030"
+     crossorigin="anonymous"></script>
+    <script>
+function openChat (id){
+window.location.href = `/?url=${id}`;
+}
+function openWeb(webpage){
+window.open(webpage, "_blank");
+}
+function date(time){
+return `${time.toDateString()}`;
+}
+//document.write(date(new Date(2025, 1, 27, 12, 30, 0)));
+    </script>
+
+</body>
+</html>
